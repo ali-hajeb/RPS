@@ -1,0 +1,9 @@
+.game-container {
+    display: flex;
+    flex-direction: column;
+    /* height: 100%; */
+}
+
+.mid {
+    flex-grow: 1;
+}

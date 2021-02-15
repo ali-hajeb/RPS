@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Paper-Stone-Scissors</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    span {
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container m-3">
+    <span class="border border-info rounded p-2 ">
+      <form>
+        <div id="nicknamePart" class="input-group mb-3">
+          <input type="text" id="inp_username" class="form-control" placeholder="NickName">
+          <input type="text" id="inp_room_code" class="form-control" placeholder="Create a New Room Or join one">
+          <div class="input-group-append">
+            <button id="btn_submit" class="btn btn-success">Go</button>
+          </div>
+        </div>
+      </form>
+    </span>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script>
+    /////////
+    $(function () {
+      var socket = io();
+
+      $('#btn_submit').click(function (e) {
+        e.preventDefault(); // prevents page reloading
+        alert(document.getElementById('inp_username').value + document.getElementById('inp_room_code').value);
+        socket.emit('addUser', { nickName: document.getElementById('inp_username').value, roomId: document.getElementById('inp_room_code').value });
+        return false;
+      });
+
+      socket.on('gameStarting', function (data) {
+        if (data.systemMassage === "full") {
+          alert("This room is full");
+          document.body.innerHTML = '<div class="container m-3">\
+                  <span class="border border-info rounded p-2 ">\
+                    <form>\
+                      <div id="nicknamePart" class="input-group mb-3">\
+                        <input type="text" id="inp_username" class="form-control" placeholder="NickName">\
+                        <input type="text" id="inp_room_code" class="form-control" placeholder="Create a New Room Or join one">\
+                        <div class="input-group-append">\
+                          <button id="btn_submit" class="btn btn-success">Go</button>\
+                        </div>\
+                      </div>\
+                    </form>\
+                  </span>\
+                </div>';
+        }
+        else {
+          document.body.innerHTML = '\
+                      <div class="container m-3">\
+                      <span class="border border-info rounded p-2 ">\
+                      <button class="btn-info btn m-1">' + data.yourusername + '<span class="badge badge-light m-1">0</span></button>' + 'VS <button class="btn-info btn m-1">' + data.opponent + '<span class="badge badge-light m-1">0</span>' + '</button>' + '</br><h3>'+data.systemMassage+'</h3>\
+                      <button class="btn btn-success m-1" id = "paper">Paper</button>\
+                      <button class="btn btn-success m-1" id = "stone">Stone</button>\
+                      <button class="btn btn-success m-1" id = "scissores">Scissores</button>\
+                      </span>\
+                      </div>\
+                      ';
+          sessionStorage.setItem('username', data.yourusername);
+          sessionStorage.setItem('opponent', data.opponent);
+          sessionStorage.setItem('gamenumber', data.gamenumber);
+          sessionStorage.setItem('round', 0);
+          sessionStorage.setItem('yourWins', 0);
+          sessionStorage.setItem('opponentWins', 0);
+          sessionStorage.setItem('history', "");
+
+          $('#paper').click(function (e) {
+            e.preventDefault(); // prevents page reloading
+            socket.emit('nextMove',
+              {
+                move: 'paper',
+                username: sessionStorage.getItem('username'),
+                opponent: sessionStorage.getItem('opponent'),
+                gamenumber: sessionStorage.getItem('gamenumber'),
+                round: sessionStorage.getItem('round')
+              });
+            sessionStorage.setItem('round', parseInt(sessionStorage.getItem('round')) + 1);
+            document.getElementById("paper").disabled = true;
+            document.getElementById("stone").disabled = true;
+            document.getElementById("scissores").disabled = true;
+            return false;
+          });
+
+          $('#stone').click(function (e) {
+            e.preventDefault(); // prevents page reloading
+            socket.emit('nextMove', {
+              move: 'stone',
+              username: sessionStorage.getItem('username'),
+              opponent: sessionStorage.getItem('opponent'),
+              gamenumber: sessionStorage.getItem('gamenumber'),
+              round: sessionStorage.getItem('round')
+            });
+            sessionStorage.setItem('round', parseInt(sessionStorage.getItem('round')) + 1);
+            document.getElementById("paper").disabled = true;
+            document.getElementById("stone").disabled = true;
+            document.getElementById("scissores").disabled = true;
+            return false;
+          });
+
+          $('#scissores').click(function (e) {
+            e.preventDefault(); // prevents page reloading
+            socket.emit('nextMove', {
+              move: 'scissores',
+              username: sessionStorage.getItem('username'),
+              opponent: sessionStorage.getItem('opponent'),
+              gamenumber: sessionStorage.getItem('gamenumber'),
+              round: sessionStorage.getItem('round'),
+            });
+            sessionStorage.setItem('round', parseInt(sessionStorage.getItem('round')) + 1);
+            document.getElementById("paper").disabled = true;
+            document.getElementById("stone").disabled = true;
+            document.getElementById("scissores").disabled = true;
+            return false;
+          });
+
+        }
+      });
+
+      socket.on('winner', function (data) {
+        if (data.winner === sessionStorage.getItem('username')) {
+          sessionStorage.setItem('yourWins', parseInt(sessionStorage.getItem('yourWins')) + 1);
+        }
+        if (data.winner === sessionStorage.getItem('opponent')) {
+          sessionStorage.setItem('opponentWins', parseInt(sessionStorage.getItem('opponentWins')) + 1);
+        }
+        sessionStorage.setItem('history', sessionStorage.getItem('history') + "</br>" + data.action);
+        document.body.innerHTML = '\
+      <div class="container m-3">\
+        <span class="border border-info rounded p-2 ">\
+          <button class="btn-info btn m-1">' + sessionStorage.getItem('username') + '\
+            <span class="badge badge-light m-1">'+ sessionStorage.getItem('yourWins') + '\
+            </span>\
+          </button>\
+          VS <button class="btn-info btn m-1">' + sessionStorage.getItem('opponent') + '\
+          <span class="badge badge-light m-1">'+ sessionStorage.getItem('opponentWins') + '</span> </button>' + '</br>\
+          <h3>Make your move And the Winner is:'+ data.winner + '</h3>\
+          <button class="btn btn-success m-1" id = "paper">Paper</button>\
+          <button class="btn btn-success m-1" id = "stone">Stone</button>\
+          <button class="btn btn-success m-1" id = "scissores">Scissores</button>\
+        </span>\
+        <span class="border border-info rounded p-2 ">'+ sessionStorage.getItem('history') + '\
+        </span>\
+      </div>';
+        $('#paper').click(function (e) {
+          e.preventDefault(); // prevents page reloading
+          socket.emit('nextMove',
+            {
+              move: 'paper',
+              username: sessionStorage.getItem('username'),
+              opponent: sessionStorage.getItem('opponent'),
+              gamenumber: sessionStorage.getItem('gamenumber'),
+              round: sessionStorage.getItem('round')
+            });
+          sessionStorage.setItem('round', parseInt(sessionStorage.getItem('round')) + 1);
+          document.getElementById("paper").disabled = true;
+          document.getElementById("stone").disabled = true;
+          document.getElementById("scissores").disabled = true;
+          return false;
+        });
+
+        $('#stone').click(function (e) {
+          e.preventDefault(); // prevents page reloading
+          socket.emit('nextMove', {
+            move: 'stone',
+            username: sessionStorage.getItem('username'),
+            opponent: sessionStorage.getItem('opponent'),
+            gamenumber: sessionStorage.getItem('gamenumber'),
+            round: sessionStorage.getItem('round')
+          });
+          sessionStorage.setItem('round', parseInt(sessionStorage.getItem('round')) + 1);
+          document.getElementById("paper").disabled = true;
+          document.getElementById("stone").disabled = true;
+          document.getElementById("scissores").disabled = true;
+          return false;
+        });
+
+        $('#scissores').click(function (e) {
+          e.preventDefault(); // prevents page reloading
+          socket.emit('nextMove', {
+            move: 'scissores',
+            username: sessionStorage.getItem('username'),
+            opponent: sessionStorage.getItem('opponent'),
+            gamenumber: sessionStorage.getItem('gamenumber'),
+            round: sessionStorage.getItem('round'),
+          });
+          sessionStorage.setItem('round', parseInt(sessionStorage.getItem('round')) + 1);
+          document.getElementById("paper").disabled = true;
+          document.getElementById("stone").disabled = true;
+          document.getElementById("scissores").disabled = true;
+          return false;
+        });
+      });
+
+    });
+/////////
+  </script>
+</body>
+
+</html>
