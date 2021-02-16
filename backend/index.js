@@ -1,9 +1,6 @@
 /* eslint-disable no-undef */
-<<<<<<< HEAD
 //kir too git
-=======
 //from a higher JAYGHAH to the others
->>>>>>> c51806192805513b8f7a443ec3a7a9719755c603
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http, {
