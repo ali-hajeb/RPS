@@ -1,17 +1,4 @@
 /* eslint-disable no-undef */
-//kir too git
-//Man kos mikham
-//na be negahe jensi be dokhtar
-//git riiideeeeee
-//from a higher JAYGHAH to the others
-
-
-
-
-
-///////dg vaghean kos mikham bi taarof
-
-
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http, {
