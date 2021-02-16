@@ -12,14 +12,14 @@ export default function Game (props) {
                 move: command,
                 username: context.user.userName,
                 opponent: context.user.opponent,
-                gamenumber: context.user.userCode,
+                gamenumber: context.user.gameNumber,
                 round: context.user.round
             });
     }
     return (
         <div className='game-container'>
-            <div className="top">
-                <div className="d-flex">
+            <div className="top d-flex justify-content-center align-items-center">
+                <div className="d-flex justify-content-space flex-row ">
                     <div className="player-pic"></div>
                     <div className="player-info">{context.user.opponent}</div>
                 </div>

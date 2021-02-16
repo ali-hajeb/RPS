@@ -14,8 +14,9 @@ const App = props => {
     const [sysMsg, setSysMsg] = useState();
     const [userName, setUserName] = useState();
     const [userCode, setUserCode] = useState();
+    const [gameNumber, setGameNumber] = useState();
     const [opponent, setOpponent] = useState();
-    const [round, setRound] = useState('0');
+    const [round, setRound] = useState(0);
 
     useEffect(() => {
         console.log('change: ', userLoggedIn);
@@ -23,6 +24,7 @@ const App = props => {
             if ( data.stat === 400) {
                 setUserLoggedIn(true);
                 setOpponent(data.opponent);
+                setGameNumber(data.gamenumber)
             } else {
                 setUserLoggedIn(false);
             }
@@ -30,18 +32,18 @@ const App = props => {
         });
     }, [userLoggedIn]);
     
-    const user = {userName: userName, userCode: userCode, opponent: opponent, round: round, setUserName, setUserCode, setUserLoggedIn};
+    const user = {userName: userName, userCode: userCode, opponent: opponent, gameNumber: gameNumber, round: round, setUserName, setUserCode, setUserLoggedIn};
     const value = {socket, user};
 
     return (
-        <Container fluid={true} className="main">
+        <div className="main h-100 d-flex flex-column align-items-stretch">
             <h1>Rock Paper Scissors!</h1>
             <userAuth.Provider value={value}>
                 {
                     userLoggedIn ? <Game setRound={setRound} /> :  <SignIn setUserCode={setUserCode} setUserName={setUserName} sysMsg={sysMsg}/>
                 }
             </userAuth.Provider>
-        </Container>
+        </div>
     );
 }
 
