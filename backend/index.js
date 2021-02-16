@@ -1,5 +1,9 @@
 /* eslint-disable no-undef */
+<<<<<<< HEAD
 //kir too git
+=======
+//from a higher JAYGHAH to the others
+>>>>>>> c51806192805513b8f7a443ec3a7a9719755c603
 var app = require('express')();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http, {
@@ -28,6 +32,7 @@ io.on('connection', (socket) => {
     if (roomNumber === "full") {
       io.to(data.nickName).emit('gameStarting', { stat: 200, systemMassage: "full" });
     }
+    //this fucking number => roomNumber is being sent to clint and is expected to be return in next move
     else if (roomNumber === "create") {
       io.to(data.nickName).emit('gameStarting', { stat: 300, yourusername: data.nickName, opponent: null, gamenumber: rooms.length - 1, systemMassage: "Wait for User to connect your room id is: " + rooms[rooms.length - 1].roomId });
     }
@@ -39,6 +44,7 @@ io.on('connection', (socket) => {
 
   socket.on('nextMove', (move) => {
     console.log(move);
+    //this motherfucker code expects a number which refer to the 'rooms[]'
     let currentGameNumber = move.gamenumber;
     if (move.round === String(rooms[currentGameNumber].round)) {
       rooms[currentGameNumber].moves.push({ player: move.username, move: move.move, round: move.round });
