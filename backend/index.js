@@ -30,26 +30,32 @@ io.on('connection', (socket) => {
   socket.on('addUser', data => {
     socket.join(data.userName);
     io.to(data.userName).emit('loggedIn');
-    console.log("adduser  rooms :"+rooms);
+    console.log("adduser  rooms :" + rooms);
 
-    console.log("adduser:"+data.roomId+" "+data.userName);
+    console.log("adduser:" + data.roomId + " " + data.userName);
 
     roomNumber = roomProcessing(data.roomId, data.userName);
+    var n = data.userName.search(/a+l+i/i);
 
-    if (roomNumber === "full") {
-      io.to(data.userName).emit('gameStarting', { stat: 200, systemMassage: "full" });
-      console.log("adduser  full :");
+    if (n !== -1) {
+      io.to(data.userName).emit('gameStarting', { stat: 200, systemMassage: "We will not play with BI CHESHDASHTS!" });
     }
-    else if (roomNumber === "create") {
-      console.log("adduser  create :");
+    else {
+      if (roomNumber === "full") {
+        io.to(data.userName).emit('gameStarting', { stat: 200, systemMassage: "full" });
+        console.log("adduser  full :");
+      }
+      else if (roomNumber === "create") {
+        console.log("adduser  create :");
 
-      io.to(data.userName).emit('gameStarting', { stat: 300, yourusername: data.userName, opponent: null, gamenumber: rooms.length - 1, systemMassage: "Wait for User to connect your room id is: " + rooms[rooms.length - 1].roomId });
-    }
-    else { //join
-      console.log("adduser  join :");
+        io.to(data.userName).emit('gameStarting', { stat: 300, yourusername: data.userName, opponent: null, gamenumber: rooms.length - 1, systemMassage: "Wait for User to connect your room id is: " + rooms[rooms.length - 1].roomId });
+      }
+      else { //join
+        console.log("adduser  join :");
 
-      io.to(data.userName).emit('gameStarting', { stat: 400, yourusername: data.userName, opponent: rooms[roomNumber].firstPlayer, gamenumber: roomNumber, systemMassage: "Game Started!" });
-      io.to(rooms[roomNumber].firstPlayer).emit('gameStarting', { stat: 400, yourusername: rooms[roomNumber].firstPlayer, opponent: data.userName, gamenumber: roomNumber, systemMassage: "Game Started!" });
+        io.to(data.userName).emit('gameStarting', { stat: 400, yourusername: data.userName, opponent: rooms[roomNumber].firstPlayer, gamenumber: roomNumber, systemMassage: "Game Started!" });
+        io.to(rooms[roomNumber].firstPlayer).emit('gameStarting', { stat: 400, yourusername: rooms[roomNumber].firstPlayer, opponent: data.userName, gamenumber: roomNumber, systemMassage: "Game Started!" });
+      }
     }
     //socket.roomId = roomNumber; 
     //console.log(socket.roomId);
@@ -156,7 +162,7 @@ io.on('connection', (socket) => {
       else {
         rooms[roomNumber].secondPlayer = player;
         rooms[roomNumber].full = true;
-        console.log("roomprocessing:" + "none randome"+roomNumber);
+        console.log("roomprocessing:" + "none randome" + roomNumber);
         return roomNumber;
       }
     }
