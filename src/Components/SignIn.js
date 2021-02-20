@@ -25,7 +25,7 @@ export default function SignIn(props) {
 
     const onSubmit = e => {
         e.preventDefault();
-        context.socket.emit('addUser', { nickName: context.user.userName, roomId: context.user.userCode });
+        context.socket.emit('addUser', { userName: context.user.userName, roomId: context.user.userCode });
     }
     return (
         <div className="SignIn">
