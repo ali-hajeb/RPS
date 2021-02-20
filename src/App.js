@@ -7,7 +7,9 @@ import SignIn from './Components/SignIn';
 import Game from './Components/Game';
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3002');
+const socket = io('http://localhost:4645');
+
+// Dooste Arzeshmand
 
 const App = props => {
     const [userLoggedIn, setUserLoggedIn] = useState(false);

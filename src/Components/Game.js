@@ -1,5 +1,9 @@
 import React, { useContext } from 'react';
 import userAuth from '../Context/userAuth';
+import userPic from '../Svg/user.svg';
+import rockPic from '../Svg/hand-rock.svg';
+import paperPic from '../Svg/hand-paper.svg';
+import scissorsPic from '../Svg/hand-scissors.svg';
 import './Game.css';
 
 export default function Game (props) { 
@@ -7,7 +11,7 @@ export default function Game (props) {
 
     const handleGameCommand = e => {
         const command = e.target.id;
-        context.socket.emit('nextMove',
+        context.socket.emit(
             {
                 move: command,
                 username: context.user.userName,
@@ -19,23 +23,21 @@ export default function Game (props) {
     return (
         <div className='game-container'>
             <div className="top d-flex justify-content-center align-items-center">
-                <div className="d-flex justify-content-space flex-row ">
-                    <div className="player-pic"></div>
-                    <div className="player-info">{context.user.opponent}</div>
+                <div className="d-flex justify-content-center flex-column ">
+                    <div className="player-pic"><img src={userPic} className="rounded-circle p-2" width="64" alt="profile"/></div>
+                    <div className="player-info text-center font-weight-bold"><h2>{context.user.opponent}</h2></div>
                 </div>
             </div>
             <div className="mid">test</div>
             <div className="bot">
-                <div className="d-flex flex-column">
-                    <div className="d-flex">
-                        <button id="rock" className="game-button" onClick={handleGameCommand.bind(this)}>rock</button>
-                        <button id="paper" className="game-button" onClick={handleGameCommand.bind(this)}>paper</button>
-                        <button id="scissor" className="game-button" onClick={handleGameCommand.bind(this)}>scissor</button>
-                    </div>
-                    <div className="d-flex">
+                <div className="p-5 d-flex justify-content-center">
+                    <button id="rock" className="game-button" onClick={handleGameCommand.bind(this)}><img src={rockPic} alt="rock"/></button>
+                    <button id="paper" className="game-button" onClick={handleGameCommand.bind(this)}><img src={paperPic} alt="paper"/></button>
+                    <button id="scissor" className="game-button" onClick={handleGameCommand.bind(this)}><img src={scissorsPic} alt="scissors"/></button>
+                    {/* <div className="d-flex">
                         <div className="player-pic"></div>
                         <div className="player-info">{context.user.userName}</div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

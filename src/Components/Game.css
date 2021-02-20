@@ -7,15 +7,23 @@
 .game-button {
     width: 64px;
     height:64px;
+    border: .25rem solid black;
     border-radius: 50%;
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0;
+    margin: .25rem .5rem;
 }
 
 .game-button img {
     padding: .5rem;
+}
+
+.player-pic {
+    border-radius: 50%;
+    border: .25rem solid black;
+    /* box-shadow: 0 0 1rem .5rem rgba(0, 0, 0, .1); */
 }
 
 .mid {
