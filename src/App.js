@@ -34,7 +34,7 @@ const App = props => {
         });
     }, [userLoggedIn]);
     
-    const user = {userName: userName, userCode: userCode, opponent: opponent, gameNumber: gameNumber, round: round, setUserName, setUserCode, setUserLoggedIn};
+    const user = {userName: userName, userCode: userCode, opponent: opponent, gameNumber: gameNumber, round: round, setRound, setUserName, setUserCode, setUserLoggedIn};
     const value = {socket, user};
 
     return (

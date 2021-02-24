@@ -66,10 +66,13 @@ io.on('connection', (socket) => {
 
     let currentGameNumber = move.gamenumber;
     //let currentGameNumber = roomFinding(move.roomId);
+    console.log('///////   NEXT MOVE ///////');
+    console.log(move);
 
     if (move.round === String(rooms[currentGameNumber].round)) {
       rooms[currentGameNumber].moves.push({ player: move.username, move: move.move, round: move.round });
       prevMoveIndex = rooms[currentGameNumber].moves.length - 2;
+      console.log(rooms[currentGameNumber].moves);
       if (prevMoveIndex >= 0) {
         prevRound = rooms[currentGameNumber].moves[prevMoveIndex].round;
       }
@@ -78,6 +81,7 @@ io.on('connection', (socket) => {
       }
       if (prevRound === move.round) {
         winner = findTheWinner(rooms[currentGameNumber].moves[prevMoveIndex], rooms[currentGameNumber].moves[prevMoveIndex + 1]);
+        console.log(winner);
         let action = "Round:" + move.round + ",Winner is:" + winner + " || " + rooms[currentGameNumber].moves[prevMoveIndex].player + ":" + rooms[currentGameNumber].moves[prevMoveIndex].move + " AND " + rooms[currentGameNumber].moves[prevMoveIndex + 1].player + ":" + rooms[currentGameNumber].moves[prevMoveIndex + 1].move;
 
         io.to(rooms[currentGameNumber].firstPlayer).emit('winner', { winner: winner, round: move.round, action: action });
@@ -91,6 +95,7 @@ io.on('connection', (socket) => {
   });
   //end of move processign
   function findTheWinner(move1, move2) {
+    console.log(move1, move2);
     if (move1.move === move2.move) {
       return 'even';
     }
@@ -103,14 +108,14 @@ io.on('connection', (socket) => {
       }
     }
     if (move1.move === "stone") {
-      if (move2.move === "scissores") {
+      if (move2.move === "scissors") {
         return move1.player;
       }
       else {
         return move2.player;
       }
     }
-    if (move1.move === "scissores") {
+    if (move1.move === "scissors") {
       if (move2.move === "paper") {
         return move1.player;
       }
