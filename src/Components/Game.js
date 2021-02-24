@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import userAuth from '../Context/userAuth';
 import userPic from '../Svg/user.svg';
 import rockPic from '../Svg/hand-rock.svg';
@@ -8,6 +8,9 @@ import './Game.css';
 
 export default function Game (props) { 
     const context = useContext(userAuth);
+
+    const [winner, setWinner] = useState();
+    const [result, setResult] = useState({u1: 0, u2: 0});
 
     const handleGameCommand = e => {
         const command = e.target.closest('button').id;
@@ -23,13 +26,11 @@ export default function Game (props) {
             context.user.setRound(context.user.round+1)
     }
 
-    const handleWinner = e => {
-        let winner;
-        context.socket.on('winner', data => {
-            winner = data.winner;
-        });
-        return winner;
-    }
+    context.socket.on('winner', data => {
+        setWinner(data.winner);
+        console.log(winner);
+    });
+
     return (
         <div className='game-container'>
             <div className="top d-flex justify-content-center align-items-center">
@@ -39,8 +40,9 @@ export default function Game (props) {
                 </div>
             </div>
             <div className="mid">
-                <h3>Round: {context.user.round}</h3>
-                <h3>Winner: {handleWinner()}</h3>
+                <h3 id='round'>Round: {context.user.round}</h3>
+                <h3 id='winner'>Winner: {winner}</h3>
+                <h3 id='result'>result: {result}</h3>
             </div>
             <div className="bot">
                 <div className="p-5 d-flex justify-content-center">
