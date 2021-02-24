@@ -10,11 +10,11 @@ export default function Game (props) {
     const context = useContext(userAuth);
 
     const [winner, setWinner] = useState();
-    const [result, setResult] = useState({u1: 0, u2: 0});
+    const [u1, setU1] = useState(0);
+    const [u2, setU2] = useState(0);
 
     const handleGameCommand = e => {
         const command = e.target.closest('button').id;
-        console.log(command);
         context.socket.emit('nextMove',
             {
                 move: command,
@@ -28,7 +28,10 @@ export default function Game (props) {
 
     context.socket.on('winner', data => {
         setWinner(data.winner);
-        console.log(winner);
+        if (data.winner === context.user.userName) {
+            setU1(u1 + 1);
+        }
+        else setU2(u2 + 1);
     });
 
     return (
@@ -42,17 +45,13 @@ export default function Game (props) {
             <div className="mid">
                 <h3 id='round'>Round: {context.user.round}</h3>
                 <h3 id='winner'>Winner: {winner}</h3>
-                <h3 id='result'>result: {result}</h3>
+                <h3 id='result'>result: {u1} - {u2}</h3>
             </div>
             <div className="bot">
                 <div className="p-5 d-flex justify-content-center">
                     <button id="rock" className="game-button" onClick={handleGameCommand.bind(this)}><img src={rockPic} alt="rock" /></button>
                     <button id="paper" className="game-button" onClick={handleGameCommand.bind(this)}><img src={paperPic} alt="paper"/></button>
                     <button id="scissors" className="game-button" onClick={handleGameCommand.bind(this)}><img src={scissorsPic} alt="scissors"/></button>
-                    {/* <div className="d-flex">
-                        <div className="player-pic"></div>
-                        <div className="player-info">{context.user.userName}</div>
-                    </div> */}
                 </div>
             </div>
         </div>

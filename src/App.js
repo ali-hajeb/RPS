@@ -21,7 +21,7 @@ const App = props => {
     const [round, setRound] = useState(0);
 
     useEffect(() => {
-        console.log('change: ', userLoggedIn);
+        console.log('userLoggedIn: ', userLoggedIn);
         socket.on('gameStarting', data => {
             if ( data.stat === 400) {
                 setUserLoggedIn(true);
