@@ -62,52 +62,64 @@ io.on('connection', (socket) => {
   });  //end of user adding 
 
   socket.on('nextMove', (move) => {
-    console.log(move);
 
     let currentGameNumber = move.gamenumber;
     //let currentGameNumber = roomFinding(move.roomId);
-    console.log('///////   NEXT MOVE ///////');
-    console.log(move);
 
-    if (move.round === String(rooms[currentGameNumber].round)) {
-      rooms[currentGameNumber].moves.push({ player: move.username, move: move.move, round: move.round });
+    //checking if the user and server are processing same playe round
+    if (move.round === rooms[currentGameNumber].round) {
+      rooms[currentGameNumber].moves.push({
+        player: move.username,
+        move: move.move,
+        round: move.round
+      });
+
       prevMoveIndex = rooms[currentGameNumber].moves.length - 2;
-      console.log(rooms[currentGameNumber].moves);
+
       if (prevMoveIndex >= 0) {
         prevRound = rooms[currentGameNumber].moves[prevMoveIndex].round;
       }
       else {
         prevRound = "undefind";
       }
+
       if (prevRound === move.round) {
         winner = findTheWinner(rooms[currentGameNumber].moves[prevMoveIndex], rooms[currentGameNumber].moves[prevMoveIndex + 1]);
         console.log(winner);
         let action = "Round:" + move.round + ",Winner is:" + winner + " || " + rooms[currentGameNumber].moves[prevMoveIndex].player + ":" + rooms[currentGameNumber].moves[prevMoveIndex].move + " AND " + rooms[currentGameNumber].moves[prevMoveIndex + 1].player + ":" + rooms[currentGameNumber].moves[prevMoveIndex + 1].move;
-
-        io.to(rooms[currentGameNumber].firstPlayer).emit('winner', { winner: winner, round: move.round, action: action });
-        io.to(rooms[currentGameNumber].secondPlayer).emit('winner', { winner: winner, round: move.round, action: action });
+        io.to(rooms[currentGameNumber].firstPlayer).emit('winner', {stat: 200, winner: winner, round: move.round, action: action });
+        io.to(rooms[currentGameNumber].secondPlayer).emit('winner', {stat: 200, winner: winner, round: move.round, action: action });
         rooms[currentGameNumber].round = rooms[currentGameNumber].round + 1;
       }
+      else {
+        io.to(move.userName).emit('winner', {stat: 400, action:"Your action is not valid "});
+
+      }
+
+    }//
+    else if (move.round > rooms[currentGameNumber].round) {// user must wait for opponent to play
+      io.to(move.userName).emit('winner', {stat: 400, action:"Your action is not valid "});
     }
     else {
+      io.to(move.userName).emit('winner', {stat: 400, action:"Your action is not valid "});
     }
 
   });
   //end of move processign
   function findTheWinner(move1, move2) {
-    console.log(move1, move2);
+    console.log("find winners: " + move1.move, move2.move);
     if (move1.move === move2.move) {
       return 'even';
     }
     if (move1.move === "paper") {
-      if (move2.move === "stone") {
+      if (move2.move === "rock") {
         return move1.player;
       }
       else {
         return move2.player;
       }
     }
-    if (move1.move === "stone") {
+    if (move1.move === "rock") {
       if (move2.move === "scissors") {
         return move1.player;
       }
