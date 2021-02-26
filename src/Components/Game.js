@@ -20,7 +20,7 @@ export default function Game (props) {
                 move: command,
                 username: context.user.userName,
                 opponent: context.user.opponent,
-                gamenumber: context.user.gameNumber,
+                roomId: context.user.userCode,
                 round: context.user.round
             });
             context.user.setRound(context.user.round+1)

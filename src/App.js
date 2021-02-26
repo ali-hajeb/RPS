@@ -16,7 +16,7 @@ const App = props => {
     const [sysMsg, setSysMsg] = useState();
     const [userName, setUserName] = useState();
     const [userCode, setUserCode] = useState();
-    const [gameNumber, setGameNumber] = useState();
+    //const [gameNumber, setGameNumber] = useState();
     const [opponent, setOpponent] = useState();
     const [round, setRound] = useState(0);
 
@@ -26,7 +26,7 @@ const App = props => {
             if ( data.stat === 400) {
                 setUserLoggedIn(true);
                 setOpponent(data.opponent);
-                setGameNumber(data.gamenumber)
+                //setGameNumber(data.gamenumber)
             } else {
                 setUserLoggedIn(false);
             }
@@ -34,7 +34,7 @@ const App = props => {
         });
     }, [userLoggedIn]);
     
-    const user = {userName: userName, userCode: userCode, opponent: opponent, gameNumber: gameNumber, round: round, setRound, setUserName, setUserCode, setUserLoggedIn};
+    const user = {userName: userName, userCode: userCode, opponent: opponent, round: round, setRound, setUserName, setUserCode, setUserLoggedIn};
     const value = {socket, user};
 
     return (
